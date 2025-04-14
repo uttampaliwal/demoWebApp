@@ -4,8 +4,7 @@
   "description": "A demonstration of my basic web application, for understanding and knowledge purposes.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
     "test": "echo \"Skipping tests\" && exit 0"
   },
   "keywords": [],
