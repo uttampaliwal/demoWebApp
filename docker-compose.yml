@@ -1,0 +1,60 @@
+services:
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:8.17.4
+    volumes:
+      - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+    pid: host
+    user: "root"
+    environment:
+      - ES_HOSTS=elasticsearch:9200
+      - KIBANA_HOST=kibana:5601
+    depends_on:
+      - elasticsearch
+    restart: always
+    command: ["/usr/share/metricbeat/metricbeat", "-e", "-E", "strict.perms=false"]
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.17.4
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/usr/share/filebeat/logs:ro  # Mount your application logs
+    user: "root" # Add this line to run as root initially to fix permissions
+    environment:
+      - ES_HOSTS=elasticsearch:9200
+      - KIBANA_HOST=kibana:5601
+    depends_on:
+      - elasticsearch
+    restart: always
+    command: ["/usr/share/filebeat/filebeat", "-e", "-E", "strict.perms=false"]
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # Disable security (NOT FOR PRODUCTION)
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck: #add healthcheck
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 | grep -q '\"status\" : \"green\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.4
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      elasticsearch.hosts: http://elasticsearch:9200
+      elasticsearch.username: "2111076211" #replace
+      elasticsearch.password: "Icedragon@1234" #replace
+
+volumes:
+  esdata:

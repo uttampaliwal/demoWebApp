@@ -1,0 +1,28 @@
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+
+metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu
+    - memory
+    - network
+    - process
+  enabled: true
+  period: 10s
+
+# nodejs module
+#- module: nodejs
+  #metricsets:
+  #  - eventloop
+  #  - http
+  #  - process
+  #enabled: true
+  #period: 10s
+  #hosts: ["http://localhost:3000"] # Adjust the port to match your Node.js application
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+

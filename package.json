@@ -12,7 +12,10 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "express": "^5.1.0"
+    "@elastic/elasticsearch": "^8.17.1",
+    "elastic-apm-node": "^4.11.2",
+    "express": "^5.1.0",
+    "winston": "^3.17.0"
   },
   "repository": {
     "type": "git",
